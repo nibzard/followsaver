@@ -1,0 +1,475 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "Twitter Following/Followers API Raw Data Schema",
+  "description": "Complete schema for user data collected from Twitter's GraphQL Following/Followers API endpoints",
+  "type": "object",
+  "properties": {
+    "__typename": {
+      "type": "string",
+      "description": "GraphQL type name",
+      "examples": ["User"]
+    },
+    "id": {
+      "type": "string",
+      "description": "Internal GraphQL ID"
+    },
+    "rest_id": {
+      "type": "string",
+      "description": "Twitter user ID (numeric string)",
+      "pattern": "^[0-9]+$"
+    },
+    "affiliates_highlighted_label": {
+      "type": ["object", "null"],
+      "description": "Affiliate program labels"
+    },
+    "avatar": {
+      "type": "object",
+      "description": "Avatar/profile image information",
+      "properties": {
+        "url": {
+          "type": "string",
+          "format": "uri",
+          "description": "Direct URL to avatar image"
+        },
+        "image_url": {
+          "type": "string",
+          "format": "uri",
+          "description": "Alternative avatar image URL"
+        }
+      }
+    },
+    "core": {
+      "type": "object",
+      "description": "Core user data structure",
+      "properties": {
+        "user_results": {
+          "type": "object",
+          "properties": {
+            "result": {
+              "type": "object",
+              "properties": {
+                "legacy": {
+                  "$ref": "#/definitions/legacyUserObject"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "dm_permissions": {
+      "type": "object",
+      "description": "Direct message permissions"
+    },
+    "has_graduated_access": {
+      "type": "boolean",
+      "description": "Whether user has graduated access privileges"
+    },
+    "is_blue_verified": {
+      "type": "boolean",
+      "description": "Twitter Blue verification status"
+    },
+    "legacy": {
+      "$ref": "#/definitions/legacyUserObject"
+    },
+    "location": {
+      "type": "object",
+      "description": "Location information object",
+      "properties": {
+        "location": {
+          "type": "string",
+          "description": "User's location as a string"
+        },
+        "full_name": {
+          "type": "string",
+          "description": "Full location name"
+        },
+        "name": {
+          "type": "string",
+          "description": "Location name"
+        },
+        "display_name": {
+          "type": "string",
+          "description": "Display name for location"
+        },
+        "country": {
+          "type": "string",
+          "description": "Country name"
+        },
+        "locality": {
+          "type": "string",
+          "description": "Local area/city"
+        }
+      }
+    },
+    "media_permissions": {
+      "type": "object",
+      "description": "Media upload/viewing permissions"
+    },
+    "parody_commentary_fan_label": {
+      "type": ["object", "null"],
+      "description": "Labels for parody, commentary, or fan accounts"
+    },
+    "profile_image_shape": {
+      "type": "string",
+      "description": "Shape of profile image",
+      "enum": ["Circle", "Square"]
+    },
+    "professional": {
+      "type": "object",
+      "description": "Professional account information",
+      "properties": {
+        "rest_id": {
+          "type": "string"
+        },
+        "professional_type": {
+          "type": "string",
+          "enum": ["Business", "Creator"]
+        },
+        "category": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "id": {
+                "type": "number"
+              },
+              "name": {
+                "type": "string"
+              },
+              "icon_name": {
+                "type": "string"
+              }
+            }
+          }
+        }
+      }
+    },
+    "privacy": {
+      "type": "object",
+      "description": "Privacy settings"
+    },
+    "relationship_perspectives": {
+      "type": "object",
+      "description": "Relationship status with viewing user"
+    },
+    "tipjar_settings": {
+      "type": "object",
+      "description": "Tip jar/payment settings"
+    },
+    "verification": {
+      "type": "object",
+      "description": "Verification status and badges",
+      "properties": {
+        "verified": {
+          "type": "boolean"
+        },
+        "verified_type": {
+          "type": "string",
+          "enum": ["Blue", "Government", "Business"]
+        }
+      }
+    }
+  },
+  "required": ["rest_id"],
+  "definitions": {
+    "legacyUserObject": {
+      "type": "object",
+      "description": "Legacy Twitter user object with core profile data",
+      "properties": {
+        "created_at": {
+          "type": "string",
+          "description": "Account creation date",
+          "pattern": "^[A-Za-z]{3} [A-Za-z]{3} [0-9]{2} [0-9]{2}:[0-9]{2}:[0-9]{2} \\+[0-9]{4} [0-9]{4}$",
+          "examples": ["Sat Aug 05 23:31:27 +0000 2006"]
+        },
+        "default_profile": {
+          "type": "boolean",
+          "description": "Whether using default profile settings"
+        },
+        "default_profile_image": {
+          "type": "boolean",
+          "description": "Whether using default profile image"
+        },
+        "description": {
+          "type": "string",
+          "description": "User's bio/description text",
+          "maxLength": 500
+        },
+        "entities": {
+          "type": "object",
+          "description": "Entity extraction from profile fields",
+          "properties": {
+            "description": {
+              "type": "object",
+              "properties": {
+                "urls": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "display_url": {
+                        "type": "string"
+                      },
+                      "expanded_url": {
+                        "type": "string",
+                        "format": "uri"
+                      },
+                      "url": {
+                        "type": "string",
+                        "format": "uri"
+                      },
+                      "indices": {
+                        "type": "array",
+                        "items": {
+                          "type": "number"
+                        },
+                        "minItems": 2,
+                        "maxItems": 2
+                      }
+                    }
+                  }
+                },
+                "hashtags": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "text": {
+                        "type": "string"
+                      },
+                      "indices": {
+                        "type": "array",
+                        "items": {
+                          "type": "number"
+                        },
+                        "minItems": 2,
+                        "maxItems": 2
+                      }
+                    }
+                  }
+                },
+                "user_mentions": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "id_str": {
+                        "type": "string"
+                      },
+                      "name": {
+                        "type": "string"
+                      },
+                      "screen_name": {
+                        "type": "string"
+                      },
+                      "indices": {
+                        "type": "array",
+                        "items": {
+                          "type": "number"
+                        },
+                        "minItems": 2,
+                        "maxItems": 2
+                      }
+                    }
+                  }
+                }
+              }
+            },
+            "url": {
+              "type": "object",
+              "properties": {
+                "urls": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "display_url": {
+                        "type": "string"
+                      },
+                      "expanded_url": {
+                        "type": "string",
+                        "format": "uri"
+                      },
+                      "url": {
+                        "type": "string",
+                        "format": "uri"
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "fast_followers_count": {
+          "type": "number",
+          "description": "Fast followers count metric",
+          "minimum": 0
+        },
+        "favourites_count": {
+          "type": "number",
+          "description": "Number of tweets liked by user",
+          "minimum": 0
+        },
+        "followers_count": {
+          "type": "number",
+          "description": "Number of followers",
+          "minimum": 0
+        },
+        "friends_count": {
+          "type": "number",
+          "description": "Number of accounts followed (following count)",
+          "minimum": 0
+        },
+        "has_custom_timelines": {
+          "type": "boolean",
+          "description": "Whether user has custom timelines"
+        },
+        "is_translator": {
+          "type": "boolean",
+          "description": "Whether user is a Twitter translator"
+        },
+        "listed_count": {
+          "type": "number",
+          "description": "Number of lists user appears on",
+          "minimum": 0
+        },
+        "location": {
+          "type": "string",
+          "description": "User's location (legacy field, often empty in favor of top-level location object)"
+        },
+        "media_count": {
+          "type": "number",
+          "description": "Number of media items posted",
+          "minimum": 0
+        },
+        "name": {
+          "type": "string",
+          "description": "User's display name",
+          "maxLength": 50
+        },
+        "normal_followers_count": {
+          "type": "number",
+          "description": "Normal followers count metric",
+          "minimum": 0
+        },
+        "pinned_tweet_ids_str": {
+          "type": "array",
+          "description": "IDs of pinned tweets",
+          "items": {
+            "type": "string",
+            "pattern": "^[0-9]+$"
+          }
+        },
+        "possibly_sensitive": {
+          "type": "boolean",
+          "description": "Whether content might be sensitive"
+        },
+        "profile_background_color": {
+          "type": "string",
+          "description": "Profile background color hex code",
+          "pattern": "^[0-9A-Fa-f]{6}$"
+        },
+        "profile_background_image_url": {
+          "type": "string",
+          "format": "uri",
+          "description": "Background image URL"
+        },
+        "profile_background_image_url_https": {
+          "type": "string",
+          "format": "uri",
+          "description": "Background image HTTPS URL"
+        },
+        "profile_background_tile": {
+          "type": "boolean",
+          "description": "Whether background image tiles"
+        },
+        "profile_banner_url": {
+          "type": "string",
+          "format": "uri",
+          "description": "Profile banner image URL"
+        },
+        "profile_image_url": {
+          "type": "string",
+          "format": "uri",
+          "description": "Profile image URL (HTTP)"
+        },
+        "profile_image_url_https": {
+          "type": "string",
+          "format": "uri",
+          "description": "Profile image URL (HTTPS)"
+        },
+        "profile_interstitial_type": {
+          "type": "string",
+          "description": "Profile interstitial display type"
+        },
+        "profile_link_color": {
+          "type": "string",
+          "description": "Profile link color hex code",
+          "pattern": "^[0-9A-Fa-f]{6}$"
+        },
+        "profile_sidebar_border_color": {
+          "type": "string",
+          "description": "Profile sidebar border color hex code",
+          "pattern": "^[0-9A-Fa-f]{6}$"
+        },
+        "profile_sidebar_fill_color": {
+          "type": "string",
+          "description": "Profile sidebar fill color hex code",
+          "pattern": "^[0-9A-Fa-f]{6}$"
+        },
+        "profile_text_color": {
+          "type": "string",
+          "description": "Profile text color hex code",
+          "pattern": "^[0-9A-Fa-f]{6}$"
+        },
+        "profile_use_background_image": {
+          "type": "boolean",
+          "description": "Whether to use background image"
+        },
+        "protected": {
+          "type": "boolean",
+          "description": "Whether account is protected/private"
+        },
+        "screen_name": {
+          "type": "string",
+          "description": "Username/handle (without @)",
+          "pattern": "^[A-Za-z0-9_]{1,15}$"
+        },
+        "statuses_count": {
+          "type": "number",
+          "description": "Number of tweets posted",
+          "minimum": 0
+        },
+        "translator_type": {
+          "type": "string",
+          "description": "Type of translator account",
+          "enum": ["none", "regular", "contributor"]
+        },
+        "url": {
+          "type": ["string", "null"],
+          "format": "uri",
+          "description": "User's website URL"
+        },
+        "verified": {
+          "type": "boolean",
+          "description": "Legacy verification status (pre-checkmark changes)"
+        },
+        "want_retweets": {
+          "type": "boolean",
+          "description": "Whether user wants retweets shown"
+        },
+        "withheld_in_countries": {
+          "type": "array",
+          "description": "Countries where content is withheld",
+          "items": {
+            "type": "string",
+            "pattern": "^[A-Z]{2}$"
+          }
+        }
+      },
+      "required": ["screen_name", "name"]
+    }
+  }
+}

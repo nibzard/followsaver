@@ -1,0 +1,300 @@
+/* ABOUTME: Styles for the FollowSaver extension popup interface */
+/* ABOUTME: Clean, minimal design with modern branding and Twitter-like aesthetics */
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    width: 350px;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    font-size: 14px;
+    line-height: 1.4;
+    color: #14171a;
+    background: #fff;
+}
+
+.container {
+    padding: 16px;
+}
+
+.header {
+    margin-bottom: 16px;
+    border-bottom: 1px solid #e1e8ed;
+    padding-bottom: 12px;
+}
+
+.header h1 {
+    font-size: 16px;
+    font-weight: 700;
+    color: #1da1f2;
+    margin-bottom: 4px;
+}
+
+.status {
+    font-size: 12px;
+    color: #657786;
+}
+
+.stats {
+    display: flex;
+    gap: 16px;
+    margin-bottom: 16px;
+    padding: 12px;
+    background: #f7f9fa;
+    border-radius: 8px;
+}
+
+.stat-item {
+    flex: 1;
+    text-align: center;
+}
+
+.stat-label {
+    display: block;
+    font-size: 11px;
+    color: #657786;
+    text-transform: uppercase;
+    font-weight: 600;
+    margin-bottom: 2px;
+}
+
+.stat-value {
+    display: block;
+    font-size: 18px;
+    font-weight: 700;
+    color: #14171a;
+}
+
+.accounts-list {
+    max-height: 200px;
+    overflow-y: auto;
+    margin-bottom: 16px;
+    border: 1px solid #e1e8ed;
+    border-radius: 8px;
+}
+
+.account-item {
+    display: flex;
+    flex-direction: column;
+    padding: 12px;
+    border-bottom: 1px solid #e1e8ed;
+    gap: 8px;
+}
+
+.account-item:last-child {
+    border-bottom: none;
+}
+
+.account-item.has-new {
+    background: #f0f8ff;
+    border-left: 3px solid #FF6B35;
+}
+
+.account-info {
+    flex: 1;
+}
+
+.account-name {
+    font-weight: 600;
+    color: #14171a;
+    margin-bottom: 2px;
+}
+
+.account-stats {
+    font-size: 12px;
+    color: #657786;
+}
+
+.new-indicator {
+    display: inline-block;
+    background: #FF6B35;
+    color: white;
+    font-size: 9px;
+    font-weight: 700;
+    padding: 2px 6px;
+    border-radius: 10px;
+    margin-left: 8px;
+    vertical-align: middle;
+}
+
+.new-count {
+    color: #FF6B35;
+    font-weight: 600;
+}
+
+.no-data {
+    padding: 24px;
+    text-align: center;
+    color: #657786;
+    font-style: italic;
+}
+
+.actions {
+    display: flex;
+    gap: 8px;
+    margin-bottom: 16px;
+}
+
+.btn {
+    flex: 1;
+    padding: 10px 16px;
+    border: none;
+    border-radius: 6px;
+    font-size: 13px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+}
+
+.btn:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+.btn-primary {
+    background: #1da1f2;
+    color: white;
+}
+
+.btn-primary:hover:not(:disabled) {
+    background: #1991db;
+}
+
+.btn-secondary {
+    background: #fff;
+    color: #657786;
+    border: 1px solid #e1e8ed;
+}
+
+.btn-secondary:hover:not(:disabled) {
+    background: #f7f9fa;
+    color: #14171a;
+}
+
+.btn-small {
+    padding: 6px 10px;
+    font-size: 11px;
+    flex: none;
+    width: auto;
+}
+
+.account-export-buttons {
+    display: flex;
+    gap: 8px;
+    justify-content: stretch;
+}
+
+.export-account-btn,
+.export-account-csv-btn {
+    flex: 1;
+    background: #1da1f2;
+    color: white;
+    border: 1px solid #1da1f2;
+}
+
+.export-account-btn:hover,
+.export-account-csv-btn:hover {
+    background: #1991db;
+    border-color: #1991db;
+}
+
+.btn-diff {
+    flex: 1;
+    background: #e74c3c;
+    color: white;
+    border: 1px solid #e74c3c;
+}
+
+.btn-diff:hover {
+    background: #c0392b;
+    border-color: #c0392b;
+}
+
+.diff-stat {
+    color: #e74c3c;
+    font-weight: 600;
+    font-size: 11px;
+}
+
+.ratio-good {
+    color: #27ae60;
+    font-weight: 600;
+    font-size: 11px;
+}
+
+.ratio-bad {
+    color: #e74c3c;
+    font-weight: 600;
+    font-size: 11px;
+}
+
+
+.instructions {
+    padding: 12px;
+    background: #f0f8ff;
+    border-radius: 8px;
+    border-left: 3px solid #1da1f2;
+}
+
+.instructions p {
+    font-weight: 600;
+    margin-bottom: 8px;
+    color: #14171a;
+}
+
+.instructions ol {
+    margin-left: 16px;
+    color: #657786;
+}
+
+.instructions li {
+    margin-bottom: 4px;
+}
+
+.tagline {
+    font-size: 12px;
+    color: #657786;
+    font-style: italic;
+    margin-top: 4px;
+}
+
+.privacy-note {
+    margin-top: 8px;
+    padding-top: 8px;
+    border-top: 1px solid #e1e8ed;
+    font-size: 12px;
+    color: #28a745;
+    font-weight: 600;
+    text-align: center;
+}
+
+/* Scrollbar styling */
+.accounts-list::-webkit-scrollbar {
+    width: 6px;
+}
+
+.accounts-list::-webkit-scrollbar-track {
+    background: #f7f9fa;
+}
+
+.accounts-list::-webkit-scrollbar-thumb {
+    background: #e1e8ed;
+    border-radius: 3px;
+}
+
+.accounts-list::-webkit-scrollbar-thumb:hover {
+    background: #ccd6dd;
+}
+
+/* SVG icon styling */
+svg {
+    display: inline-block;
+    vertical-align: middle;
+}
