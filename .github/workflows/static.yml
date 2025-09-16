@@ -34,10 +34,10 @@ jobs:
 
       - name: Create deployment structure
         run: |
-          mkdir -p _site/followsaver
-          cp privacy-policy.html _site/followsaver/
+          mkdir -p _site
+          cp privacy-policy.html _site/
           # Create index.html that redirects to the main repo
-          cat > _site/followsaver/index.html << 'EOF'
+          cat > _site/index.html << 'EOF'
           <!DOCTYPE html>
           <html>
           <head>
@@ -59,7 +59,7 @@ jobs:
   deploy:
     environment:
       name: github-pages
-      url: ${{ steps.deployment.outputs.page_url }}followsaver/
+      url: ${{ steps.deployment.outputs.page_url }}
     runs-on: ubuntu-latest
     needs: build
     steps:
