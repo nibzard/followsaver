@@ -14,9 +14,12 @@ document.addEventListener('DOMContentLoaded', async function() {
     
     // Load and display data
     await loadData();
-    
+
     // Clear functionality
     clearBtn.addEventListener('click', clearData);
+
+    // Close dropdowns when clicking outside
+    document.addEventListener('click', closeAllDropdowns);
     
     async function loadData() {
         try {
@@ -110,8 +113,8 @@ document.addEventListener('DOMContentLoaded', async function() {
                     const accountEl = document.createElement('div');
                     accountEl.className = 'account-item' + (newFollowingForAccount > 0 || newFollowersForAccount > 0 ? ' has-new' : '');
                     
-                    const followingDisplay = formatNumber(followingCount) + (newFollowingForAccount > 0 ? ` <span class="new-count">(+${formatNumber(newFollowingForAccount)} new)</span>` : '');
-                    const followersDisplay = formatNumber(followersCount) + (newFollowersForAccount > 0 ? ` <span class="new-count">(+${formatNumber(newFollowersForAccount)} new)</span>` : '');
+                    const followingDisplay = formatFullNumber(followingCount) + (newFollowingForAccount > 0 ? ` <span class="new-count">(+${formatFullNumber(newFollowingForAccount)} new)</span>` : '');
+                    const followersDisplay = formatFullNumber(followersCount) + (newFollowersForAccount > 0 ? ` <span class="new-count">(+${formatFullNumber(newFollowersForAccount)} new)</span>` : '');
 
                     // Calculate diff count for display
                     const notFollowingBack = calculateNotFollowingBack(userData[account]);
@@ -148,26 +151,50 @@ document.addEventListener('DOMContentLoaded', async function() {
                             <div class="account-name">@${account}${(newFollowingForAccount > 0 || newFollowersForAccount > 0) ? ' <span class="new-indicator">NEW</span>' : ''}</div>
                             <div class="account-stats">
                                 Following: ${followingDisplay} (${lastFollowingUpdate}) •
-                                Followers: ${followersDisplay} (${lastFollowersUpdate})${hasBothDataTypes ? ` • <span class="${ratioClass}">Ratio: <strong>${ratioDisplay}</strong></span>` : ''}${hasBothDataTypes ? ` • <span class="diff-stat">Not following back: <strong>${formatNumber(diffCount)}</strong></span>` : ''}
+                                Followers: ${followersDisplay} (${lastFollowersUpdate})${hasBothDataTypes ? ` • <span class="${ratioClass}">Ratio: <strong>${ratioDisplay}</strong></span>` : ''}${hasBothDataTypes ? ` • <span class="diff-stat">Not following back: <strong>${formatFullNumber(diffCount)}</strong></span>` : ''}
                             </div>
                         </div>
                         <div class="account-export-buttons">
-                            <button class="btn btn-small export-account-btn" data-account="${account}">
-                                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                                    <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
-                                    <polyline points="7,10 12,15 17,10"/>
-                                    <line x1="12" y1="15" x2="12" y2="3"/>
-                                </svg>
-                                JSON
-                            </button>
-                            <button class="btn btn-small export-account-csv-btn" data-account="${account}">
-                                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                                    <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
-                                    <polyline points="7,10 12,15 17,10"/>
-                                    <line x1="12" y1="15" x2="12" y2="3"/>
-                                </svg>
-                                CSV
-                            </button>
+                            <div class="btn-group">
+                                <button class="btn btn-small export-account-btn" data-account="${account}" title="Export all data (JSON)">
+                                    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                        <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+                                        <polyline points="7,10 12,15 17,10"/>
+                                        <line x1="12" y1="15" x2="12" y2="3"/>
+                                    </svg>
+                                    JSON
+                                </button>
+                                <button class="btn btn-small btn-dropdown export-json-dropdown" data-account="${account}" title="JSON export options">
+                                    <svg width="8" height="8" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                        <polyline points="6,9 12,15 18,9"></polyline>
+                                    </svg>
+                                </button>
+                                <div class="dropdown-menu json-dropdown-menu" data-account="${account}">
+                                    <button class="dropdown-item" data-export="all" data-format="json">Export All</button>
+                                    <button class="dropdown-item ${followingCount === 0 ? 'disabled' : ''}" data-export="following" data-format="json" ${followingCount === 0 ? 'disabled' : ''}>Following Only (${formatFullNumber(followingCount)})</button>
+                                    <button class="dropdown-item ${followersCount === 0 ? 'disabled' : ''}" data-export="followers" data-format="json" ${followersCount === 0 ? 'disabled' : ''}>Followers Only (${formatFullNumber(followersCount)})</button>
+                                </div>
+                            </div>
+                            <div class="btn-group">
+                                <button class="btn btn-small export-account-csv-btn" data-account="${account}" title="Export all data (CSV)">
+                                    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                        <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+                                        <polyline points="7,10 12,15 17,10"/>
+                                        <line x1="12" y1="15" x2="12" y2="3"/>
+                                    </svg>
+                                    CSV
+                                </button>
+                                <button class="btn btn-small btn-dropdown export-csv-dropdown" data-account="${account}" title="CSV export options">
+                                    <svg width="8" height="8" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                        <polyline points="6,9 12,15 18,9"></polyline>
+                                    </svg>
+                                </button>
+                                <div class="dropdown-menu csv-dropdown-menu" data-account="${account}">
+                                    <button class="dropdown-item" data-export="all" data-format="csv">Export All</button>
+                                    <button class="dropdown-item ${followingCount === 0 ? 'disabled' : ''}" data-export="following" data-format="csv" ${followingCount === 0 ? 'disabled' : ''}>Following Only (${formatFullNumber(followingCount)})</button>
+                                    <button class="dropdown-item ${followersCount === 0 ? 'disabled' : ''}" data-export="followers" data-format="csv" ${followersCount === 0 ? 'disabled' : ''}>Followers Only (${formatFullNumber(followersCount)})</button>
+                                </div>
+                            </div>
                             ${hasBothDataTypes && diffCount > 0 ? `
                             <button class="btn btn-small btn-diff export-diff-btn" data-account="${account}" title="Export users you follow who don't follow back">
                                 <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
@@ -188,8 +215,51 @@ document.addEventListener('DOMContentLoaded', async function() {
                     const exportAccountCSVBtn = accountEl.querySelector('.export-account-csv-btn');
                     const exportDiffBtn = accountEl.querySelector('.export-diff-btn');
 
-                    exportAccountBtn.addEventListener('click', () => exportAccountData(account, userData[account]));
-                    exportAccountCSVBtn.addEventListener('click', () => exportAccountDataAsCSV(account, userData[account]));
+                    // Dropdown buttons
+                    const jsonDropdownBtn = accountEl.querySelector('.export-json-dropdown');
+                    const csvDropdownBtn = accountEl.querySelector('.export-csv-dropdown');
+
+                    // Dropdown menus
+                    const jsonDropdownMenu = accountEl.querySelector('.json-dropdown-menu');
+                    const csvDropdownMenu = accountEl.querySelector('.csv-dropdown-menu');
+
+                    // Main export button events (export all)
+                    exportAccountBtn.addEventListener('click', () => exportAccountData(account, userData[account], 'all'));
+                    exportAccountCSVBtn.addEventListener('click', () => exportAccountDataAsCSV(account, userData[account], 'all'));
+
+                    // Dropdown toggle events
+                    jsonDropdownBtn.addEventListener('click', (e) => {
+                        e.stopPropagation();
+                        closeAllDropdowns();
+                        jsonDropdownMenu.classList.toggle('show');
+                        updateAccountsListOverflow();
+                    });
+
+                    csvDropdownBtn.addEventListener('click', (e) => {
+                        e.stopPropagation();
+                        closeAllDropdowns();
+                        csvDropdownMenu.classList.toggle('show');
+                        updateAccountsListOverflow();
+                    });
+
+                    // Dropdown item events
+                    jsonDropdownMenu.addEventListener('click', (e) => {
+                        if (e.target.classList.contains('dropdown-item') && !e.target.disabled) {
+                            const exportType = e.target.dataset.export;
+                            exportAccountData(account, userData[account], exportType);
+                            jsonDropdownMenu.classList.remove('show');
+                            updateAccountsListOverflow();
+                        }
+                    });
+
+                    csvDropdownMenu.addEventListener('click', (e) => {
+                        if (e.target.classList.contains('dropdown-item') && !e.target.disabled) {
+                            const exportType = e.target.dataset.export;
+                            exportAccountDataAsCSV(account, userData[account], exportType);
+                            csvDropdownMenu.classList.remove('show');
+                            updateAccountsListOverflow();
+                        }
+                    });
 
                     if (exportDiffBtn) {
                         exportDiffBtn.addEventListener('click', () => exportDiffAsCSV(account, userData[account]));
@@ -217,21 +287,21 @@ document.addEventListener('DOMContentLoaded', async function() {
         URL.revokeObjectURL(url);
     }
     
-    function exportAccountData(accountName, accountData) {
+    function exportAccountData(accountName, accountData, dataType = 'all') {
         try {
             const followingCount = accountData.following ? Object.keys(accountData.following).length : 0;
             const followersCount = accountData.followers ? Object.keys(accountData.followers).length : 0;
-            
+
             const timestamp = new Date().toISOString().slice(0, 19).replace(/[:.]/g, '-');
             let filesCreated = 0;
-            
-            // Export following data if exists
-            if (followingCount > 0) {
+
+            // Export following data if requested and exists
+            if ((dataType === 'all' || dataType === 'following') && followingCount > 0) {
                 const followingRawData = {};
                 Object.keys(accountData.following).forEach(userId => {
                     followingRawData[userId] = accountData.following[userId].rawData;
                 });
-                
+
                 const followingExportObj = {
                     exportDate: new Date().toISOString(),
                     exportType: 'raw-following',
@@ -239,18 +309,18 @@ document.addEventListener('DOMContentLoaded', async function() {
                     totalUsers: followingCount,
                     accounts: { [accountName]: followingRawData }
                 };
-                
+
                 downloadFile(followingExportObj, `x-following-${accountName}-${timestamp}.json`);
                 filesCreated++;
             }
-            
-            // Export followers data if exists
-            if (followersCount > 0) {
+
+            // Export followers data if requested and exists
+            if ((dataType === 'all' || dataType === 'followers') && followersCount > 0) {
                 const followersRawData = {};
                 Object.keys(accountData.followers).forEach(userId => {
                     followersRawData[userId] = accountData.followers[userId].rawData;
                 });
-                
+
                 const followersExportObj = {
                     exportDate: new Date().toISOString(),
                     exportType: 'raw-followers',
@@ -258,11 +328,11 @@ document.addEventListener('DOMContentLoaded', async function() {
                     totalUsers: followersCount,
                     accounts: { [accountName]: followersRawData }
                 };
-                
+
                 downloadFile(followersExportObj, `x-followers-${accountName}-${timestamp}.json`);
                 filesCreated++;
             }
-            
+
         } catch (error) {
             console.error('Error exporting account data:', error);
         }
@@ -291,7 +361,7 @@ document.addEventListener('DOMContentLoaded', async function() {
         }
     }
     
-    async function exportAccountDataAsCSV(accountName, accountData) {
+    async function exportAccountDataAsCSV(accountName, accountData, dataType = 'all') {
         try {
             const followingCount = accountData.following ? Object.keys(accountData.following).length : 0;
             const followersCount = accountData.followers ? Object.keys(accountData.followers).length : 0;
@@ -310,8 +380,8 @@ document.addEventListener('DOMContentLoaded', async function() {
                 console.log('FollowSaver Debug: First user complete raw data:', JSON.stringify(firstUser.rawData, null, 2));
             }
 
-            // Export following data if exists
-            if (followingCount > 0) {
+            // Export following data if requested and exists
+            if ((dataType === 'all' || dataType === 'following') && followingCount > 0) {
                 const followingUsers = [];
                 Object.keys(accountData.following).forEach(userId => {
                     const userEntry = accountData.following[userId];
@@ -336,9 +406,9 @@ document.addEventListener('DOMContentLoaded', async function() {
                 downloadCSVFile(csvContent, `x-following-${accountName}-${timestamp}.csv`);
                 filesCreated++;
             }
-            
-            // Export followers data if exists
-            if (followersCount > 0) {
+
+            // Export followers data if requested and exists
+            if ((dataType === 'all' || dataType === 'followers') && followersCount > 0) {
                 const followersUsers = [];
                 Object.keys(accountData.followers).forEach(userId => {
                     const userEntry = accountData.followers[userId];
@@ -350,15 +420,15 @@ document.addEventListener('DOMContentLoaded', async function() {
                     );
                     followersUsers.push(extractedFields);
                 });
-                
+
                 // Use async version for large datasets, sync for small ones
-                const csvContent = followersUsers.length > 500 
+                const csvContent = followersUsers.length > 500
                     ? await convertToCSV(followersUsers)
                     : convertToCSVSync(followersUsers);
                 downloadCSVFile(csvContent, `x-followers-${accountName}-${timestamp}.csv`);
                 filesCreated++;
             }
-            
+
         } catch (error) {
             console.error('Error exporting account CSV data:', error);
         }
@@ -390,7 +460,7 @@ document.addEventListener('DOMContentLoaded', async function() {
         return notFollowingBack;
     }
 
-    // Number Formatting Helper
+    // Number Formatting Helper (abbreviated for badges)
     function formatNumber(num) {
         if (num >= 1000000) {
             return (num / 1000000).toFixed(num % 1000000 === 0 ? 0 : 1) + 'M';
@@ -399,6 +469,11 @@ document.addEventListener('DOMContentLoaded', async function() {
             return (num / 1000).toFixed(num % 1000 === 0 ? 0 : 1) + 'k';
         }
         return num.toString();
+    }
+
+    // Full Number Formatting Helper (with comma separators for popup display)
+    function formatFullNumber(num) {
+        return num.toLocaleString();
     }
     
     // CSV Export Helper Functions with security hardening
@@ -647,6 +722,27 @@ document.addEventListener('DOMContentLoaded', async function() {
         } catch (error) {
             console.error('Error exporting diff CSV data:', error);
             alert('Error exporting diff data. Please try again.');
+        }
+    }
+
+    // Helper function to close all dropdown menus
+    function closeAllDropdowns() {
+        const allDropdowns = document.querySelectorAll('.dropdown-menu.show');
+        allDropdowns.forEach(dropdown => {
+            dropdown.classList.remove('show');
+        });
+        updateAccountsListOverflow();
+    }
+
+    // Helper function to manage accounts list overflow based on dropdown state
+    function updateAccountsListOverflow() {
+        const accountsList = document.getElementById('accountsList');
+        const hasActiveDropdown = document.querySelector('.dropdown-menu.show');
+
+        if (hasActiveDropdown) {
+            accountsList.classList.add('dropdown-active');
+        } else {
+            accountsList.classList.remove('dropdown-active');
         }
     }
 });
